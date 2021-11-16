@@ -22,6 +22,7 @@ const { Schema } = mongoose;
 
 //Auth 
 //Authentication
+//schema
 const userSchema = new Schema({
 	username: {
 		type: String,
@@ -42,11 +43,12 @@ const userSchema = new Schema({
 	}
 });
 
+//model
 const User = mongoose.model('User', userSchema);
 
 passport.use(new Strategy(
 	function(username, password, done){
-		username.findOne({ username: username }, function(err, user){
+		User.findOne({ username: username }, function(err, user){
 			//cant connect db
 			if(err){
 				return done(err);
@@ -66,6 +68,7 @@ passport.use(new Strategy(
 	}
 ));
 
+//valid password
 const validPassword = function(password, salt, hash){
 	let key = pbkdf2.pbkdf2Sync(password, salt, 1, 32, 'sha512');
 
@@ -96,17 +99,21 @@ module.exports = { app, mongoose };
 // Tell express to use the json body parser middleware
 app.use(express.json());
 
+//use passport
+app.use(passport.initialize());
+const checkAuth = passport.authenticate('basic', { session: false })
+
 // Set routes
 app.get('/', function(req, res){
 	res.send(`Simple note-taking app. Version ${VERSION}.`);
 });
 
-app.get('/notes', note.getAll);
+app.get('/notes', checkAuth, note.getAll);
 app.get('/notes/:searchTerm', checkAuth, note.getOne);
-app.post('/notes', note.postOne);
-app.delete('/notes/:objectId', note.deleteOne);
-app.put('/notes/:objectId', note.putOne);
-app.patch('/notes/:objectId', note.updateOne)
+app.post('/notes', checkAuth, note.postOne);
+app.delete('/notes/:objectId', checkAuth, note.deleteOne);
+app.put('/notes/:objectId', checkAuth, note.putOne);
+app.patch('/notes/:objectId', checkAuth, note.updateOne)
 
 
 // Start it up!
