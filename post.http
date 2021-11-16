@@ -1,0 +1,10 @@
+// post data in 
+
+POST http://localhost:8080/notes HTTP/1.1
+content-type: application/json
+
+{
+    "subject": "CIS",
+    "course": 371,
+    "note": "New blank note!"
+}

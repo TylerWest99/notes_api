@@ -1,0 +1,8 @@
+
+PATCH http://localhost:8080/notes/6182d481122355b0b3d8838c HTTP/1.1
+Content-Type: application/json
+
+{
+    "subject": "SCI",
+    "course": 201
+}
