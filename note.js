@@ -82,11 +82,11 @@ exports.deleteOne = async function(req, res){
     try{
         const deleted = await Note.deleteOne({_id: req.params.objectId}) 
         res.sendStatus(200)
-		console.log("Successful DELETE")
+		//console.log("Successful DELETE")
     }
     catch{
         res.sendStatus(404)
-        console.log("Error resource not found")
+        //onsole.log("Error resource not found")
     }
 }
 
