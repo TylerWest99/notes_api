@@ -12,7 +12,8 @@ const { Schema } = mongoose;
 // Make a new Schema for what we wish a Note
 // to look like.
 const noteSchema = new Schema({
-	userId: mongoose.ObjectId,
+	noteId: mongoose.ObjectId,
+	userId: String,
 	subject: String,
 	course: Number,
 	date: { type: Date, default: Date.now },
@@ -25,7 +26,9 @@ const Note = mongoose.model('Note', noteSchema);
 // Create the function for getting ALL the notes.
 // export it so we can use it in app.js.
 exports.getAll = async function(req, res) {
-	const notes = await Note.find({});
+	const notes = await Note.find({
+		userId : req.user._id
+	});
 	res.json(notes);
 }
 
@@ -38,7 +41,8 @@ exports.getOne = async function(req, res){
 	// We are using a regex to search.
 	const notes = await Note.find({ 
 		note: { 
-			$regex: req.params.searchTerm 
+			$regex: req.params.searchTerm,
+			userId : req.user._id
 		}
 	});
 	
@@ -56,6 +60,7 @@ exports.getOne = async function(req, res){
 // export is so we can use it in app.js.
 exports.postOne = async function(req, res){
 	const note = new Note({
+		userId: req.user._id,
 		subject: req.body.subject,
 		course: req.body.course,
 		note: req.body.note
@@ -69,7 +74,7 @@ exports.postOne = async function(req, res){
 	}
 	note.save();
     res.sendStatus(200);
-    console.log("Successful POST")
+    //console.log("Successful POST")
 	return;
 }
 
@@ -77,7 +82,7 @@ exports.deleteOne = async function(req, res){
     try{
         const deleted = await Note.deleteOne({_id: req.params.objectId}) 
         res.sendStatus(200)
-        console.log("Successful DELETE")
+		console.log("Successful DELETE")
     }
     catch{
         res.sendStatus(404)
