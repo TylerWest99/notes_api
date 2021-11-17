@@ -46,7 +46,7 @@ const User = mongoose.model('User', userSchema);
 
 passport.use(new Strategy(
 	function(username, password, done){
-		username.findOne({ username: username }, function(err, user){
+		User.findOne({ username: username }, function(err, user){
 			//cant connect db
 			if(err){
 				return done(err);
@@ -86,6 +86,7 @@ try {
 // Create the app instance
 const app = express();
 const port = 8080;
+app.use(passport.initialize())
 
 
 module.exports = { app, mongoose };
@@ -101,12 +102,14 @@ app.get('/', function(req, res){
 	res.send(`Simple note-taking app. Version ${VERSION}.`);
 });
 
-app.get('/notes', note.getAll);
+const checkAuth = passport.authenticate('basic', {session: false})
+
+app.get('/notes', checkAuth, note.getAll);
 app.get('/notes/:searchTerm', checkAuth, note.getOne);
-app.post('/notes', note.postOne);
-app.delete('/notes/:objectId', note.deleteOne);
-app.put('/notes/:objectId', note.putOne);
-app.patch('/notes/:objectId', note.updateOne)
+app.post('/notes', checkAuth, note.postOne);
+app.delete('/notes/:objectId', checkAuth, note.deleteOne);
+app.put('/notes/:objectId', checkAuth, note.putOne);
+app.patch('/notes/:objectId', checkAuth, note.updateOne)
 
 
 // Start it up!

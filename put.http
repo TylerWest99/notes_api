@@ -1,5 +1,6 @@
 PUT http://localhost:8080/notes/617ed5c4c3c1403bbaf1f6e7 HTTP/1.1
 Content-Type: application/json
+Authorization: Basic TylerRebel:51Rebel
 
 {
     "subject": "MATH",
