@@ -49,5 +49,36 @@ let add = new User({
 	salt: salt
 });
 
+//Authentication
+passport.use(new Strategy(
+	function(username, password, done){
+		username.findOne({ username: username }, function(err, user){
+			//cant connect db
+			if(err){
+				return done(err);
+			}
+			if(!user){
+				console.log("No user found")
+				return done(null, false);
+			}
+
+			if(!validPassword(password, user.salt, user.password)){
+				console.log('Wrong password')
+				return done(null, false);
+			}
+
+			return done(null, user)
+		});
+	}
+));
+
+const validPassword = function(password, salt, hash){
+	let key = pbkdf2.pbkdf2Sync(password, salt, 1, 32, 'sha512');
+
+	if(key.toString('hex') != hash){
+		return false;
+	}
+	return true;
+}
 
 // add.save();

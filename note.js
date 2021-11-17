@@ -25,8 +25,7 @@ const Note = mongoose.model('Note', noteSchema);
 // Create the function for getting ALL the notes.
 // export it so we can use it in app.js.
 exports.getAll = async function(req, res) {
-	const notes = await Note.find({
-	});
+	const notes = await Note.find({});
 	res.json(notes);
 }
 
@@ -103,6 +102,7 @@ exports.putOne = async function(req, res){
     }
 }
 
+//FIX THIS
 exports.updateOne = async function(req, res){
 	try{
 

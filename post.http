@@ -2,10 +2,9 @@
 
 POST http://localhost:8080/notes HTTP/1.1
 content-type: application/json
-Authorization: Basic TylerRebel:51Rebel
 
 {
     "subject": "CIS",
     "course": 371,
-    "note": "New note!"
+    "note": "New blank note!"
 }
